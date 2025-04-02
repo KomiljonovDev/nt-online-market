@@ -119,6 +119,13 @@ class ProductsController extends Controller
         $minSalePrice = $products->min('price');
         $maxSalePrice = $products->max('price');
 
+        $newArrivalProducts = Product::whereHas('category', function ($query) use ($parentCategories) {
+            $query->whereHas('parent', function ($q) use ($parentCategories) {
+                $q->whereNotNull('id')->where('name', $parentCategories->name);
+            });
+        })->orderBy('id', 'desc')->limit(4)->get();
+
+
         return view('product-filter', [
             'products' => $products,
             'parentCategories' => $parentCategories,
@@ -126,9 +133,9 @@ class ProductsController extends Controller
             'categories' => $categories,
             'images'=>$images,
             'weights' => $weights,
+            'newArrivalProducts' => $newArrivalProducts,
             'minSalePrice' => $minSalePrice,
             'maxSalePrice' => $maxSalePrice,
-
         ]);
     }
 

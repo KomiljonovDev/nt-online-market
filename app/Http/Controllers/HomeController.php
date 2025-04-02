@@ -7,122 +7,58 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\Product;
 use App\Models\Team;
+use App\Services\HomeService;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
+
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        if (!isset($_COOKIE['customer_token'])){
-            $uniqueId = uniqid();
-            Customer::query()->create([
-                'token' => $uniqueId
-            ]);
-            setcookie('customer_token', $uniqueId, time() + (86400 * 30), "/");
-        }
-        $topBanners = Banner::query()
-            ->where('position', 'top')
-                ->get();
-        $midBanner = Banner::query()
-            ->where('position', 'middle')
-                ->latest('updated_at')
-                    ->first();
-        $bottomBanner = Banner::query()
-            ->where('position', 'bottom')
-                ->latest('updated_at')
-                    ->first();
-        $oneBottomBanners = Banner::query()
-            ->where('position', 'one_bottom')
-                ->latest('updated_at')
-                    ->limit(2)
-                        ->get();
-        $categories = Category::query()
-            ->orderBy('id', 'desc')
-                ->with(['images', 'parent'])
-                    ->get();
-        $latestPosts = Post::query()
-            ->orderBy('id', 'desc')
-                ->with('postCategory')
-                    ->limit(10)
-                        ->get();
-        $insPosts = Post::query()
-            ->orderBy('id', 'desc')
-                ->with('insPostCategory')
-                    ->limit(10)
-                        ->get();
-        $parentCategories = Category::query()
-            ->whereNull('parent_id')
-                ->orderBy('id', 'desc')
-                    ->limit(4)
-                        ->with('categories')
-                            ->get();
-        $productsMenu = Category::query()
-            ->whereNull('parent_id')
-                ->orderBy('id', 'desc')
-                    ->with('categories')
-                        ->get();
-        $products = Product::query()
-            ->orderBy('id', 'desc')
-                ->limit(10)
-                    ->get();
-        $newArrivalProductFruits = Product::whereHas('category', function ($query) {
-            $query->where('name', 'Fruits');
-                 })->orderBy('id', 'desc')->limit(4)->get();
-
-        $newArrivalProductVegetables = Product::whereHas('category', function ($query) {
-            $query->where('name', 'Vegetables');
-                 })->orderBy('id', 'desc')->limit(4)->get();
-
-        $newArrivalProductSpicesAndSnacks = Product::whereHas('category', function ($query) {
-            $query->whereIn('name', ['Snack', 'Spices']);
-        })->orderBy('id', 'desc')->limit(4)->get();
-
-
-
-
-
-        $teams = Team::query()
-            ->orderBy('id', 'desc')
-                ->limit(10)
-                    ->get();
-        return view('home',[
-            'topBanners' => $topBanners,
-            'midBanner' => $midBanner,
-            'bottomBanner' => $bottomBanner,
-            'oneBottomBanners' => $oneBottomBanners,
-            'categories' => $categories,
-            'latestPosts' => $latestPosts,
-            'parentCategories' => $parentCategories,
-            'insPosts' => $insPosts,
-            'products' => $products,
-            'productsMenu' => $productsMenu,
-            'teams' => $teams,
-            'newArrivalProductFruits' => $newArrivalProductFruits,
-            'newArrivalProductSpicesAndSnacks' => $newArrivalProductSpicesAndSnacks,
-            'newArrivalProductVegetables' => $newArrivalProductVegetables,
-        ]);
+        $data = (new HomeService)->getHomeData(); // Static chaqirish
+        return view('home', $data);
     }
-
-
-
     public function show(string $id)
     {
-        $parentCategories = Category::query()
-            ->whereNull('parent_id')
-                ->orderBy('id', 'desc')
-                    ->limit(4)
-                        ->with('categories')
-                            ->get();
-        return view('product-filter',[
-            'parentCategories' => $parentCategories
-        ]);
+        $data = (new HomeService)->getHomeData(); // Static chaqirish
+        return view('product-filter', $data);
     }
-    public function exit()
+
+    public function about()
     {
-        auth()->logout();
-        return redirect()->route('index');
+        $data = (new HomeService)->getHomeData(); // Static chaqirish
+        return view('pages.about', $data);
+    }
+    public function contact(){
+        $data = (new HomeService)->getHomeData(); // Static chaqirish
+        return view('pages.contact', $data);
+    }
+    public function cart(){
+        $data = (new HomeService)->getHomeData(); // Static chaqirish
+        return view('pages.cart', $data);
+    }
+    public function checkout(){
+        $data = (new HomeService)->getHomeData(); // Static chaqirish
+        return view('pages.checkout', $data);
+    }
+    public function compare(){
+        $data = (new HomeService)->getHomeData(); // Static chaqirish
+        return view('pages.compare', $data);
+    }
+    public function faq(){
+        $data = (new HomeService)->getHomeData(); // Static chaqirish
+        return view('pages.faq', $data);
+    }
+    public function offers(){
+        $data = (new HomeService)->getHomeData(); // Static chaqirish
+        return view('pages.offers', $data);
+    }
+    public function terms(){
+        $data = (new HomeService)->getHomeData(); // Static chaqirish
+        return view('pages.terms', $data);
     }
 }

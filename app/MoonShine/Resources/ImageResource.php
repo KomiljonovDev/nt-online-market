@@ -53,8 +53,8 @@ class ImageResource extends ModelResource
                 ImageField::make('Path'),
                 MorphTo::make('ImageAble', 'imageable', fn($item) => $item->id . "." . $item->name)
                     ->types([
-                        Category::class => ['Categories', 'Categories'],
                         Product::class => ['Products', 'Products'],
+                        Category::class => ['Categories', 'Categories'],
                     ]),
             ])
         ];

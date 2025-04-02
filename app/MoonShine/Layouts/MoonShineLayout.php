@@ -69,8 +69,8 @@ final class MoonShineLayout extends AppLayout
             MenuGroup::make('Products', [
                 MenuItem::make('Categories', CategoryResource::class),
                 MenuItem::make('Volumes', VolumeResource::class),
-                MenuItem::make('Images', ImageResource::class),
                 MenuItem::make('Product', ProductResource::class),
+                MenuItem::make('Images', ImageResource::class),
             ]),
 
             MenuGroup::make('Images', [

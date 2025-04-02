@@ -17,13 +17,14 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->float('price');
             $table->float('sale_price')->nullable();
-            $table->foreignId('category_id')->constrained('categories');
+            $table->foreignId('category_id')->constrained('categories')->nullable();
             $table->float('quantity')->default(0);
             $table->float('pilgrim')->default(0);
             $table->foreignId('volume_id')->constrained('product_volumes');
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

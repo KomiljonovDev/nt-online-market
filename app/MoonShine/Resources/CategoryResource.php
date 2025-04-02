@@ -7,11 +7,9 @@ namespace App\MoonShine\Resources;
 use MoonShine\Laravel\Fields\Relationships\BelongsTo;
 use MoonShine\Laravel\Fields\Relationships\HasMany;
 use \MoonShine\UI\Fields\Text;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Category;
 
 use MoonShine\Laravel\Resources\ModelResource;
-use MoonShine\UI\Components\Layout\Box;
 use MoonShine\UI\Fields\ID;
 use MoonShine\Contracts\UI\FieldContract;
 use MoonShine\Contracts\UI\ComponentContract;
@@ -31,9 +29,11 @@ class CategoryResource extends ModelResource
     protected function indexFields(): iterable
     {
         return [
-            ID::make()->sortable(),
+            ID::make(),
             Text::make('name'),
-            BelongsTo::make('parent', 'parent', fn($item)=>"$item->id. $item->name",CategoryResource::class)->nullable(),
+            BelongsTo::make('Parent', 'parent', fn($item) => $item ? "$item->id. $item->name" : '-', CategoryResource::class)->nullable(),
+            HasMany::make('Products', 'products', fn($item)=>"$item->id. $item->name",
+                ProductResource::class)->nullable(),
             HasMany::make('Images','images')
         ];
     }
@@ -44,14 +44,12 @@ class CategoryResource extends ModelResource
     protected function formFields(): iterable
     {
         return [
-            Box::make([
-                ID::make(),
-                Text::make('name'),
-                BelongsTo::make('parent', 'parent', fn($item)=>"$item->id. $item->name",CategoryResource::class)->nullable(),
-
-            ]),
+            ID::make(),
+            Text::make('name'),
+            BelongsTo::make('Parent', 'parent', fn($item) => $item ? "$item->id. $item->name" : '-', CategoryResource::class)->nullable(),
+            HasMany::make('Products', 'products', fn($item)=>"$item->id. $item->name",
+                ProductResource::class)->nullable(),
             HasMany::make('Images','images')
-
         ];
     }
     /**
@@ -62,10 +60,9 @@ class CategoryResource extends ModelResource
         return [
             ID::make(),
             Text::make('name'),
-            Text::make('parent_id')->nullable(),
-            BelongsTo::make('parent', 'parent', fn($item)=>"$item->id. $item->name",CategoryResource::class)->nullable(),
+            BelongsTo::make('Parent', 'parent', fn($item) => $item ? "$item->id. $item->name" : '-', CategoryResource::class)->nullable(),
             HasMany::make('Products', 'products', fn($item)=>"$item->id. $item->name",
-                ProductResource::class),
+                ProductResource::class)->nullable(),
             HasMany::make('Images','images')
 
         ];
